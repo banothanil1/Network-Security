@@ -361,4 +361,5 @@ User's Browser
 
 ** .env is used to store apis key,username,password.
 ** find_packages package from setuptools just scans all the folder in project wherever their is __init__.py it just consider it as package builds it.
+** not always required to put -e. as it is used to send the packages and install the packages in side the cloud once the entire project is completed.
 **
