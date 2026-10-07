@@ -1,0 +1,364 @@
+## ml-project-1
+
+\*\* always use this command to create a conda environment because with this the conda enviroment also get created and also if we installl any libraries then they will be added inside this library folder of env folder. "conda create -p venv python==3.8 -y"
+
+\*\* in the beginning always go and create the gitignore file from the github their just select the python template all the ignore files will be auto comming and lateer on we will automize that changes.
+
+\*\* then afer do the setup.py.using this setup.py we will be able to builiding the entire machine learning package into a package and deploy it in pypy.
+
+\*\* anything that has **init**.py is considered to be a package and the setup.py will find the entire folder and search for init and build the package.
+
+\*\* just create a funciton inside the setup.py inorder to read the packages from passed file ie requirement.txt and return a list of packages. manually writting it would be hectic in setup.py.
+
+\*\* -e . helps to link the setup.py and execute it. and that time only all the packages available inside the ml going to get build and made a package.
+
+\*\* whatever the development we everything comes under the src folder present inside the project.
+
+\*\* in src create a folder with name component its a package. it contaions the files like data ingestion,data transfromation,model trraining part.
+
+\*\* pipelines folder has the model training and model predicting.
+
+\*\* since we implement the logging,expection,utils(helpers) in entire project so they should created at the src folder level.
+
+\*\* in exception import sys. sys have all the details about the errors which we are gettting.
+
+\*\* logging → Python's built-in system for recording messages/errors.
+os → Used to work with folders and file paths.
+datetime → Used to get the current date and time.
+
+\*\* logging.basicConfig(
+filename=LOG_FILE_PATH,
+format="[ %(asctime)s ] %(lineno)d %(name)s - %(message)s",
+level=logging.INFO
+) ("Whenever I use logging.info(), logging.error(), etc., write the information into my log file.")
+
+\*\* MyProject/
+│
+├── logs/
+│ └── 09_30_2026_07_20_15.log
+│
+├── app.py
+└── logger.py
+
+\*\* if the ipykernal is not setup is giving error then resolve using below commands running in powershell (the easiest solution is to recreate the virtual environment.)
+1.python --version
+2.python -m venv venv
+3.dir .\venv\Scripts
+4..\venv\Scripts\Activate.ps1
+5.python -m pip install --upgrade pip
+6.python -m pip install ipykernel
+
+\*\* steps related to the end to end student performnence prediction project
+1.devide the dataset into train test split
+2.standardize it using columnTransformer and one hot encoder.
+3.train the model using the standardized datat
+4.check the model performence based on different metric for classification and regression problem
+5.hyperparameter it using the different hyderparameters and find the best hyperparameter using the gridsearch cv or random search cv and retrain the model using the best predicted hyperparameter by gridsearch or random search.
+
+\*\* in big companies their will a biggdata engineers who basically brings the data from diffrent sources and put them in a different bases and based on that scientist need to use that data for model bnuilding or prediction.
+
+\*\* inside the data ingestion component. we give the different inputs to this component that is where the test/train/raw data should be stored once retrieved.and for defining the inputs we can use the @dataclass decorator. and if we have other function as well then its better to use the normal class with init.
+
+\*\* always make sure you logg everything as much as possible as its very much important if any exceptions come. and always use try except block.
+
+\*\* in data_transformation.py we will perform everything related to like missing values, transfromation, standardization and impupations techniques will be performed in here.
+
+\*\* in get_columnTranseformer object in data transformation function just make only pipelines and return the columnTransformer object
+
+\*\* in intiate data transformation use the columnTransformer object and fit_transform for train data and transeform for test data.
+
+\*\* always create the save objects functions in utils and use them in data ingestion and transformation files.
+
+\*\* flask library has the the three sub libraries Flask,render_html,request. at a time you can load.
+
+\*\* whenever deploying any project to aws bean stalk always create a folder called .ebextensions in that python.config file would be their in which you will mentioning the configuration.
+
+\*\* always while deploying the code creat a application.py similar to app.py and remove the debugger is true and port no. (this should be done)
+
+\*\*application.py becouse aws accepts in this way only.
+
+\*\*steps to Deploy in aws:
+GitHub is used to store the application source code.
+Developers push the latest code changes to the GitHub repository.
+AWS CodePipeline is connected to the GitHub repository.
+CodePipeline detects changes in the repository and starts the pipeline.
+CodePipeline automates the process of delivering the application to AWS.
+The latest code is passed from GitHub through the pipeline.
+Elastic Beanstalk is used to deploy and run the application.
+Elastic Beanstalk manages the application environment and required AWS infrastructure.
+The Python application can be configured using configuration files such as python.config.
+The application runs inside an Elastic Beanstalk environment.
+The overall flow is: GitHub → CodePipeline → Elastic Beanstalk → Application.
+
+1. Initially, I entered the wrong project/repository name **`StudentMarksPrediction`**. The actual GitHub repository was **`MLPROJECT-1`**, so I corrected the repository selection.
+
+2. Created an **AWS CodeConnections** connection to connect GitHub with AWS CodePipeline.
+
+3. The GitHub connection showed **Available**, but the repository/branch was not appearing in CodePipeline.
+
+4. Checked **GitHub → Settings → Applications → Installed GitHub Apps**, but **AWS Connector for GitHub** was not listed.
+
+5. GitHub authorization was completed, but the expected AWS Connector installation/authorization screen did not appear.
+
+6. Initially selected the wrong **Docker-based CodePipeline template**, which contained options like **ECR, Docker Build Context, DockerFilePath, and Image Tag**.
+
+7. Realized that Docker/ECR/ECS was not required because the application needed to be deployed to **AWS Elastic Beanstalk**.
+
+8. Went back to the pipeline template selection and selected **Build custom pipeline**.
+
+9. Created the pipeline with the name **`MLPROJECT-1-Pipeline`**.
+
+10. Selected **Superseded** as the pipeline execution mode.
+
+11. Selected **New service role** so AWS CodePipeline could create its required IAM service role.
+
+12. Used the **Default location** for the artifact store.
+
+13. Used the **AWS Managed Key** as the encryption key.
+
+14. For the **Build stage**, I initially checked the available options but skipped the build stage because the project could be deployed directly from the GitHub source artifact.
+
+15. For the **Test stage**, I skipped testing because no automated test stage was configured for the project yet.
+
+16. The **Deploy stage** initially did not show the required Elastic Beanstalk environment, so I had to configure/create the Elastic Beanstalk application and environment.
+
+17. During deployment, I received the IAM error:
+    **`The provided role does not have the elasticbeanstalk:CreateApplicationVersion permission`**
+
+18. I initially opened **IAM Roles Anywhere** by mistake, but this was not the correct place for the CodePipeline service-role permissions.
+
+19. Corrected this by going to **AWS IAM → Roles** and locating the **CodePipeline service role**.
+
+20. Updated the CodePipeline service role permissions to allow the required **Elastic Beanstalk actions**, including `elasticbeanstalk:CreateApplicationVersion`.
+
+21. After updating the IAM permissions, I reran the pipeline.
+
+22. The pipeline successfully retrieved the code from **GitHub**, deployed it through **AWS CodePipeline**, and released it to **AWS Elastic Beanstalk**.
+
+23. Final deployment flow:
+    **GitHub → AWS CodePipeline → AWS Elastic Beanstalk → Flask ML Application → Cricket Match Score Prediction**.
+
+24. The project was successfully deployed and made accessible through the Elastic Beanstalk environment.
+
+\*\* below is how the basically DockerFile performes
+
+\*\* 1. `FROM python:3.8-slim-buster`
+
+- Specifies the **base image** for the Docker image.
+- Uses **Python 3.8** with the lightweight `slim-buster` Linux environment.
+- Provides Python and the basic OS environment required by the application.
+
+2. `WORKDIR /app`
+   - Sets `/app` as the **working directory inside the Docker container**.
+   - All following commands will be executed from this directory.
+   - If `/app` doesn't exist, Docker creates it automatically.
+
+3. `COPY . /app`
+   - Copies all files and folders from the **current project directory** on your computer into `/app` inside the container.
+   - `.` means the current directory.
+   - `/app` is the destination inside the container.
+
+4. `RUN apt update -y && apt install awscli -y`
+   - `RUN` executes commands **while building the Docker image**.
+   - `apt update` updates the Linux package information.
+   - `apt install awscli` installs the **AWS CLI** inside the image.
+   - `-y` automatically answers "yes" during installation.
+   - `&&` means the second command runs only if the first command succeeds.
+
+5. `RUN pip install -r requirement.txt`
+   - Installs all Python packages listed in `requirement.txt`.
+   - For example, it can install Flask, pandas, NumPy, scikit-learn, etc.
+   - These packages become part of the Docker image.
+
+6. `CMD ["python3","app.py"]`
+   - Specifies the **default command that runs when a container is started**.
+   - In this case, it starts the Flask application using `app.py`.
+   - Unlike `RUN`, `CMD` executes when the **container starts**, not when the image is built.
+
+7. `Dockerfile`
+   - A text file containing instructions for **building a Docker image**.
+   - Docker reads the instructions from top to bottom and creates the image accordingly.
+
+\*\* this is how it runs after it goes to the aws ecr and ec2
+You push your code to GitHub.
+GitHub Actions automatically starts when code is pushed to the main branch.
+GitHub Actions uses actions/checkout to download your latest project code.
+GitHub Actions configures AWS credentials so it can access AWS services.
+GitHub Actions logs in to Amazon ECR (Elastic Container Registry).
+Docker builds an image using your Dockerfile.
+The Docker image contains your application code, Python environment, libraries, dependencies, and required configuration.
+GitHub Actions tags the Docker image with the ECR repository address.
+GitHub Actions pushes the Docker image to Amazon ECR.
+ECR acts like a storage/warehouse for Docker images.
+GitHub Actions connects to your EC2 server using SSH.
+EC2 logs in to Amazon ECR and pulls the latest Docker image.
+EC2 stops the old Docker container if one is already running.
+EC2 removes the old container.
+EC2 runs a new container using the latest image downloaded from ECR.
+Your ML application is now running inside a Docker container on EC2.
+
+****\*\*\***** here is the entire steps to creat a ci/cd pipeline using ecr and ec2 instance in aws.
+
+1. Created an **IAM User** in AWS and provided the required permissions for **Amazon ECR** and **Amazon EC2**.
+
+2. Created an **Amazon ECR (Elastic Container Registry)** repository with **Private** visibility.
+
+3. Copied the **ECR repository URI**, which will be used later in the Docker deployment process.
+
+4. Created an **EC2 instance (virtual server)** in AWS and launched the instance.
+
+5. Checked that the EC2 instance was in the **Running** state and connected to it using the **SSH/EC2 terminal**.
+
+6. Updated and upgraded the Ubuntu packages using:
+
+   ```bash
+   sudo apt-get update -y
+   sudo apt-get upgrade
+   ```
+
+7. Downloaded the Docker installation script:
+
+   ```bash
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   ```
+
+8. Installed Docker:
+
+   ```bash
+   sudo sh get-docker.sh
+   ```
+
+9. Added the `ubuntu` user to the Docker group so Docker commands can be executed without `sudo`:
+
+   ```bash
+   sudo usermod -aG docker ubuntu
+   ```
+
+10. Applied the Docker group changes to the current session:
+
+```bash
+newgrp docker
+```
+
+11. Went to the **GitHub repository → Settings → Actions → Runners → New self-hosted runner**.
+
+12. Selected the required operating system and architecture for the EC2 server, then copied and executed the runner installation commands in the EC2 terminal.
+
+13. While configuring the GitHub self-hosted runner:
+
+- **Runner group:** Can be left as default by pressing `Enter`.
+- **Runner name:** Give a meaningful name such as `self-hosted`.
+- The runner name helps identify the EC2 machine in the GitHub repository.
+
+14. After completing the runner setup, the runner appears under the **GitHub repository → Settings → Actions → Runners** section.
+
+15. When the runner shows as **Idle/Online**, it means the EC2 virtual server is successfully connected to GitHub and is ready to execute GitHub Actions jobs.
+
+16. The workflow can use:
+
+```yaml
+runs-on: self-hosted
+```
+
+This tells GitHub Actions to execute that particular job on the EC2 self-hosted runner instead of a GitHub-hosted machine.
+
+17. Went to **GitHub → Repository → Settings → Secrets and variables → Actions**.
+
+18. Created the required **GitHub Actions secrets**:
+
+- `AWR_ECR_LOGIN_URI`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_REGION`
+- `AWS_SECRET_ACCESS_KEY`
+- `ECR_REPOSITORY_NAME`
+
+19. These secrets allow GitHub Actions to securely authenticate with AWS and access the ECR repository without writing the credentials directly inside the workflow file.
+
+20. `AWR_ECR_LOGIN_URI` contains the **ECR registry URI**, for example:
+
+```text
+123456789012.dkr.ecr.ap-south-1.amazonaws.com
+```
+
+21. `ECR_REPOSITORY_NAME` contains the ECR repository name:
+
+```text
+studentperformanceindicator-docker-deployed
+```
+
+22. `AWS_REGION` contains the AWS region where the ECR repository and related resources are located, for example:
+
+```text
+ap-south-1
+```
+
+23. Created an **Inbound Security Group rule** for the EC2 instance to allow users to access the Flask application.
+
+24. Added the inbound rule:
+
+```text
+Type: Custom TCP
+Port: 8080
+Source: 0.0.0.0/0
+```
+
+25. Port **8080** is opened because the Flask application is running on:
+
+```python
+app.run(host="0.0.0.0", port=8080)
+```
+
+26. Docker exposes the same port using:
+
+```bash
+-p 8080:8080
+```
+
+27. Therefore, after successful deployment, the application can be accessed using:
+
+```text
+http://<EC2-Public-IP>:8080/
+```
+
+28. The overall deployment architecture is:
+
+```text
+GitHub Repository
+       ↓
+GitHub Actions
+       ↓
+Build Docker Image
+       ↓
+Push Docker Image
+       ↓
+Amazon ECR
+       ↓
+Self-Hosted GitHub Runner
+       ↓
+EC2 Virtual Server
+       ↓
+docker pull
+       ↓
+docker run
+       ↓
+Flask ML Application
+       ↓
+Port 8080
+       ↓
+User's Browser
+```
+
+29. In this setup, **ECR stores the Docker image**, while **EC2 runs the Docker container**.
+
+30. The GitHub self-hosted runner acts as the connection between **GitHub Actions and the EC2 virtual server**, allowing the deployment commands to execute directly on the EC2 machine.
+
+** NETWORK SUCURITY PROJECT - CYBER SECURITY PROBLEM **
+--------------------------------------------------------
+
+** first aphal create the gitignore file and Readme and then install the environment using "conda create -p env python==3.10"
+
+**create the folder structure as suggested by krish. and in requirement.txt add a new library called python-dotenv(used to call the virtual env. variables),pymango(used for data ingestion)
+
+** .env is used to store apis key,username,password.
+** find_packages package from setuptools just scans all the folder in project wherever their is __init__.py it just consider it as package builds it.
+**
