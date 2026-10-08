@@ -360,6 +360,11 @@ User's Browser
 **create the folder structure as suggested by krish. and in requirement.txt add a new library called python-dotenv(used to call the virtual env. variables),pymango(used for data ingestion)
 
 ** .env is used to store apis key,username,password.
+
 ** find_packages package from setuptools just scans all the folder in project wherever their is __init__.py it just consider it as package builds it.
+
 ** not always required to put -e. as it is used to send the packages and install the packages in side the cloud once the entire project is completed.
+
+**always put the credentials in .env related to the mongodb and load it via the os.getenv and send the connection request to mongodb calling mongoclient(MONGO_DB_URL)
+
 **
