@@ -367,4 +367,6 @@ User's Browser
 
 **always put the credentials in .env related to the mongodb and load it via the os.getenv and send the connection request to mongodb calling mongoclient(MONGO_DB_URL)
 
-**
+** if the ssl error is being shown while connecting to the mongodb then change the ip address bidefault to 0.0.0.0/0 for the testing and then try running the script the error should disapper.
+
+** 

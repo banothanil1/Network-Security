@@ -1,19 +1,23 @@
+import pymongo
+import certifi
 import os
 from dotenv import load_dotenv
-from pymongo import MongoClient
 
 load_dotenv()
 
-mongo_url = os.getenv("MONGO_DB_URL")
+MONGO_DB_URL = os.getenv("MONGO_DB_URL")
 
-try:
-    client = MongoClient(mongo_url)
+print("Python MongoDB test started")
 
-    # Test the connection
-    client.admin.command("ping")
+client = pymongo.MongoClient(
+    MONGO_DB_URL,
+    tls=True,
+    tlsCAFile=certifi.where(),
+    serverSelectionTimeoutMS=10000
+)
 
-    print("MongoDB connection successful!")
+print("Client created")
 
-except Exception as e:
-    print("MongoDB connection failed!")
-    print(e)
+print(client.admin.command("ping"))
+
+print("MongoDB connection successful!")
