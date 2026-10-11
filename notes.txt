@@ -369,4 +369,16 @@ User's Browser
 
 ** if the ssl error is being shown while connecting to the mongodb then change the ip address bidefault to 0.0.0.0/0 for the testing and then try running the script the error should disapper.
 
-** 
+** in constants folder init we always define the constants that are used in whole training pipeline process.
+
+** data_ingestion_artifact in entity is abasically used to return the output of the data_ingestion component.
+
+**first afhal understand the architecture provided in the pdf by krish.
+
+**data validation is used to validate the new comming data  whether column mismatch is their or not if column mismatch then return the valiataion error. and also check the data drift, and also whether their is any categorical columns exist.
+
+** data drift is nothing comparing the distribution of new data data and the disstribution with which the model is going be trained if that thats diffrent then output maynot be accurate and may return the validation error.
+
+**similar to data ingestion data validation also has the validation_config which wiill be used by validation component and similar to the data_ingestion_entity to return the out of the data_ingestion component here also their will be a validation_artifact which returns the output of the validation component. here the names which used are not matching dont get confused in output entitity files name of components.
+
+**

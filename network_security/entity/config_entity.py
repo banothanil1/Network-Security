@@ -1,6 +1,8 @@
 from datetime import datetime
 import os
+import sys
 from network_security.constant import training_pipeline
+from network_security.exception.exception import NetworkSecurityFException
 
 class TrainingPipelineConfig:
     def __init__ (self, timestamp = datetime.now()):
@@ -20,6 +22,20 @@ class DataIngestionConfig:
         self.train_test_split_ratio = training_pipeline.DATA_INGESTION_TRAIN_TEST_SPLIT_RATION
         self.database_name = training_pipeline.DATA_INGESTION_DATABASE_NAME
         self.collection_name = training_pipeline.DATA_INGESTION_COLLECTION
+
+class DataValidationConfig:
+    def __init__ (self,training_pipeline_config:TrainingPipelineConfig):
+        """this constructor intiates the constants and configures them"""
+        try: 
+            self.data_validation_dir_path = os.path.join(training_pipeline_config.artifact_dir,training_pipeline.DATA_VALIDATION_DIR_NAME)
+            self.data_validation_valid_dir_path = os.path.join(self.data_validation_dir_path,training_pipeline.DATA_VALIDATION_VALID_DIR)
+            self.data_validation_invalid_dir_path = os.path.join(self.data_validation_dir_path,training_pipeline.DATA_VALIDATION_INVALID_DIR)
+            self.data_validation_drift_report_dir = os.path.join(self.data_validation_dir_path,training_pipeline.DATA_VALIDATION_DRIFT_REPORT_DIR)
+            self.data_validation_drift_report_file_path = os.path.join(self.data_validation_dir_path,training_pipeline.DATA_VALIDATION_DRIFT_REPORT_DIR,training_pipeline.DATA_VALIDATION_DRIFT_REPORT_FILE_NAME)
+        
+        except Exception as e:
+            raise NetworkSecurityFException(e,sys)
+
 
 
 

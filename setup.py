@@ -4,7 +4,7 @@ def get_packages(filePath:str)->list[str]:
     '''this function returns the packages present inside the filePath'''
     try:
         package_list : list[str] = []
-        with open(filePath, 'r') as file:
+        with open(filePath, 'r  ') as file:
             packages = file.readlines()
             for package in packages:
                 if package and package.strip() != "-e .":
