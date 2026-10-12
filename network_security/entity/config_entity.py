@@ -36,7 +36,19 @@ class DataValidationConfig:
         except Exception as e:
             raise NetworkSecurityFException(e,sys)
 
-
+class DataTransformationConfig:
+    """this constructor Reads the constants and configures the path"""
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+            try:
+                self.data_transformation_dir_path = os.path.join(training_pipeline_config.artifact_dir,training_pipeline.DATA_TRANSFORMATION_DIR_NAME)
+                self.trasformed_data_dir_path = os.path.join(self.data_transformation_dir_path,training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DIR_NAME)
+                self.transformed_train_data_file_path = os.path.join(self.trasformed_data_dir_path,training_pipeline.TRAIN_FILE_NAME.replace("csv","npy"))
+                self.transformed_test_data_file_path = os.path.join(self.trasformed_data_dir_path,training_pipeline.TEST_FILE_NAME.replace("csv","npy"))
+                self.transformed_data_object_dir_path = os.path.join(self.data_transformation_dir_path,training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR)
+                self.transformed_data_object_file_path = os.path.join(self.transformed_data_object_dir_path,training_pipeline.DATA_TRANSFORMATION_TRASFORMED_OBJECT_FILE_NAME)
+            except Exception as e:
+                raise NetworkSecurityFException(e,sys)
+                
 
 
         

@@ -18,3 +18,10 @@ class DataValidationEntity:
     invalid_train_file_path: str
     invalid_test_file_path: str
     drift_report_file_path: str
+@dataclass
+class DataTransformationEntity:
+    data_transformation_dir_path: str
+    trasformed_train_data_file_path: str
+    trasformed_test_data_file_path: str
+    trasformed_data_object_dir_path: str
+    trasformed_data_object_file_path: str

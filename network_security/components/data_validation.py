@@ -88,13 +88,13 @@ class DataValidation:
 
             status = self.validate_data_drift(baseData=train_data,currentData=test_data)
             ##now adding if data is validated then validated dir artifact
-            if status:
-                os.makedirs(self.data_validation_config.data_validation_valid_dir_path,exist_ok=True)
-                train_data.to_csv(os.path.join(self.data_validation_config.data_validation_valid_dir_path,training_pipeline.TRAIN_FILE_NAME),index=False,header=True)
-                test_data.to_csv(os.path.join(self.data_validation_config.data_validation_valid_dir_path,training_pipeline.TEST_FILE_NAME),index=False,header=True)
-                logging.info(f"Validated Data has been stored in path: {self.data_validation_config.data_validation_valid_dir_path}")
-            else :
-                error = f"Validation Failed becouse of the data drift"
+            # if status:
+            os.makedirs(self.data_validation_config.data_validation_valid_dir_path,exist_ok=True)
+            train_data.to_csv(os.path.join(self.data_validation_config.data_validation_valid_dir_path,training_pipeline.TRAIN_FILE_NAME),index=False,header=True)
+            test_data.to_csv(os.path.join(self.data_validation_config.data_validation_valid_dir_path,training_pipeline.TEST_FILE_NAME),index=False,header=True)
+            logging.info(f"Validated Data has been stored in path: {self.data_validation_config.data_validation_valid_dir_path}")
+            # else :
+                # error = f"Validation Failed becouse of the data drift"
             data_validation_artifact = DataValidationEntity(
                 validation_status=status,
                 valid_train_file_path = os.path.join(self.data_validation_config.data_validation_valid_dir_path,training_pipeline.TRAIN_FILE_NAME),

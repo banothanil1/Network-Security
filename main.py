@@ -10,7 +10,9 @@ from network_security.logging.logger import logging
 from network_security.entity.data_ingestion_entity import DataIngestionEntity
 from network_security.exception.exception import NetworkSecurityFException
 from network_security.constant import training_pipeline
-
+from network_security.components.data_transformation import DataTransformation
+from network_security.entity.config_entity import DataTransformationConfig
+from network_security.entity.data_ingestion_entity import DataValidationEntity
 
 if __name__ == "__main__":
     try:
@@ -24,6 +26,11 @@ if __name__ == "__main__":
         data_ingestion_entity_obj = DataIngestionEntity(data_ingestion_config_obj)
         data_validation_obj = DataValidation(data_ingestion_entity_obj,training_pipeline,training_pipeline_config_obj)
         data_validation_artifact = data_validation_obj.initiate_data_validation()
-        print(data_validation_artifact)
+        ##now starting the data transformation
+        data_transformation_config = DataTransformationConfig(training_pipeline_config_obj)
+        data_transformation_object = DataTransformation(data_transformation_config=data_transformation_config,  data_validation_entity= data_validation_artifact)
+        data_transformation_artifact = data_transformation_object.initiate_data_transformation()
+        logging.info("Data Transformation Process completed Successfully")
+        print(data_transformation_artifact)
     except Exception as e:
         raise NetworkSecurityFException(e,sys)
