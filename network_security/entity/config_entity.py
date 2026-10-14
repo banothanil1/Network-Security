@@ -3,6 +3,7 @@ import os
 import sys
 from network_security.constant import training_pipeline
 from network_security.exception.exception import NetworkSecurityFException
+from network_security.logging.logger import logging
 
 class TrainingPipelineConfig:
     def __init__ (self, timestamp = datetime.now()):
@@ -48,6 +49,17 @@ class DataTransformationConfig:
                 self.transformed_data_object_file_path = os.path.join(self.transformed_data_object_dir_path,training_pipeline.DATA_TRANSFORMATION_TRASFORMED_OBJECT_FILE_NAME)
             except Exception as e:
                 raise NetworkSecurityFException(e,sys)
+
+class ModelTrainerConfig:
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+        """intialize the paths related to model training"""
+        try:
+            self.model_trainer_dir_path = os.path.join(training_pipeline_config.artifact_dir,training_pipeline.MODEL_TRAINER_DIR_NAME)
+            self.model_trainer_trained_model_dir_path = os.path.join(self.model_trainer_dir_path,training_pipeline.MODEL_TRAINER_TRAINED_MODEL_DIR)
+            self.model_trainer_trained_model_file_path = os.path.join(self.model_trainer_trained_model_dir_path,training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME)
+            logging.info("Paths intialization Completed in ModelTrainerConfig")
+        except Exception as e:
+            raise NetworkSecurityFException(e,sys)
                 
 
 

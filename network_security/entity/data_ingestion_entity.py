@@ -25,3 +25,16 @@ class DataTransformationEntity:
     trasformed_test_data_file_path: str
     trasformed_data_object_dir_path: str
     trasformed_data_object_file_path: str
+
+@dataclass
+class ClassificationReportEntity:
+    f1_score:float
+    precision:float
+    recall: float
+@dataclass
+class ModelTrainerEntity:
+    model_trainer_dir_path: str
+    model_trainer_trained_model_dir_path: str
+    model_trainer_trained_model_name_path: str
+    trained_model_classification_report:ClassificationReportEntity
+    test_model_classification_report:ClassificationReportEntity
