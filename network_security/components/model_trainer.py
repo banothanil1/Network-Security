@@ -8,6 +8,7 @@ from network_security.exception.exception import NetworkSecurityFException
 from network_security.logging.logger import logging
 from network_security.entity.config_entity import DataTransformationConfig
 from network_security.utils.ml_utils.model.estimator import NetworkModel
+import mlflow
 from network_security.entity.data_ingestion_entity import DataTransformationEntity
 from network_security.utils.main_utils.utils import load_npy_array,load_pickle_file,evaluate_model,store_pickle_file
 from network_security.utils.ml_utils.metrics.classification_score import get_classification_score
@@ -27,6 +28,20 @@ class ModalTrainer:
         try:
             self.model_trainer_config = model_trainer_config
             self.data_transformation_entity = data_transformation_entity 
+        except Exception as e:
+            raise NetworkSecurityFException(e,sys)
+
+    def track_experiments_ml_flow(self,best_model,classification_report):
+        try:
+            """this function tracks the experiments using the ml flow library"""
+            with mlflow.start_run():
+                f1 = classification_report.f1_score
+                precision = classification_report.precision
+                recall = classification_report.recall
+                mlflow.log_metric("f1_score",f1)
+                mlflow.log_metric("precision_score",precision)
+                mlflow.log_metric("recall_score",recall)
+                mlflow.sklearn.log_model(best_model)
         except Exception as e:
             raise NetworkSecurityFException(e,sys)
 
@@ -87,6 +102,14 @@ class ModalTrainer:
             #getting the classification report
             classification_report_trained_data = get_classification_score(y_train,y_train_pred)
             classification_report_test_data = get_classification_score(y_test,y_test_pred)
+
+            #now lets track the experiment ml flow
+            self.track_experiments_ml_flow(best_model=best_model,classification_report = classification_report_trained_data)
+            logging.info("Trained Data expirement tracking done using ml flow")
+
+            #let us also track the test expirement in ml flow
+            self.track_experiments_ml_flow(best_model=best_model,classification_report = classification_report_test_data)
+            logging.info("Test Data expirement tracking done using ml flow")
 
             preprocesser = load_pickle_file(filePath=self.data_transformation_entity.trasformed_data_object_file_path)
 
