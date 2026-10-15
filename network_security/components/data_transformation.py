@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import os
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import Pipeline
 from network_security.utils.main_utils.utils import store_pickle_file,create_npy_file
@@ -72,6 +73,10 @@ class DataTransformation:
             store_pickle_file(filePath=self.data_transformation_config.transformed_data_object_file_path,obj=preprocessor)
             logging.info(f"Preprocesser File has been stored in path {self.data_transformation_config.transformed_data_object_file_path}.")
 
+            #storing preprocesser obj in final_model for the future prediction
+            model_path = os.path.join("final_models", "preprocessor.pkl")
+            store_pickle_file(filePath=model_path, obj=preprocessor)
+                        
             #preparing the artifact
             data_transformation_artifact:DataTransformationEntity = DataTransformationEntity(
                 data_transformation_dir_path=self.data_transformation_config.data_transformation_dir_path,

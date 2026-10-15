@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import dagshub
+dagshub.init(repo_owner='banothanil1', repo_name='Network-Security', mlflow=True)
 from network_security.entity.data_ingestion_entity import ClassificationReportEntity,ModelTrainerEntity
 from network_security.entity.config_entity import ModelTrainerConfig
 from network_security.exception.exception import NetworkSecurityFException
@@ -118,6 +120,10 @@ class ModalTrainer:
             #now store the preprocessor and model.pkl file
             store_pickle_file(filePath=self.model_trainer_config.model_trainer_trained_model_file_path,obj=NetworkModel_obj)
             logging.info('strored the trained model to the destination folder')
+
+            #storing model.pkl in final_model for the future prediction
+            model_path = os.path.join("final_models", "model.pkl")
+            store_pickle_file(filePath=model_path, obj=best_model)
 
             #storing into the artifact and returning the artifact
             model_trainer_artifact = ModelTrainerEntity(

@@ -381,4 +381,6 @@ User's Browser
 
 **similar to data ingestion data validation also has the validation_config which wiill be used by validation component and similar to the data_ingestion_entity to return the out of the data_ingestion component here also their will be a validation_artifact which returns the output of the validation component. here the names which used are not matching dont get confused in output entitity files name of components.
 
-**
+** ml flow is used to track all the experiments and classification reports generated after training the model.
+
+** in dags hub you can track the flow connecting it to a github.
