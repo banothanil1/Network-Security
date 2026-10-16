@@ -9,6 +9,7 @@ ARTIFACT_DIR : str = "Artifacts"
 FILE_NAME: str = "PhishingData.csv"
 TRAIN_FILE_NAME:str = "train.csv"
 TEST_FILE_NAME:str = "test.csv"
+TRAINING_BUCKET_NAME:str = "networksecurity25062001"
 
 SCHEMA_FILE_PATH:str = os.path.join("data_schema","schema.yaml")
 
