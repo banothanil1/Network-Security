@@ -1,6 +1,6 @@
 from python:3.10-slim-buster
 WORKDIR /app
-COPY ./app
+COPY . /app
 
 RUN apt update -y && install awscli -y
 
