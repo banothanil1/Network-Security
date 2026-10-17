@@ -86,7 +86,7 @@ jobs:
         run: |
           docker run -d \
             --restart unless-stopped \
-            -p 8080:8080 \
+            -p 8080:8000 \
             --ipc=host \
             --name $CONTAINER_NAME \
             -e AWS_REGION=$AWS_REGION \
