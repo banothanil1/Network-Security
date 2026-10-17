@@ -1,4 +1,4 @@
-name: workflow
+name: Network Security CI/CD
 
 on:
   push:
@@ -8,19 +8,80 @@ on:
       - "README.md"
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
   integration:
     name: Continuous Integration
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint code
         run: echo "Linting repository"
 
       - name: Run unit tests
         run: echo "Running unit tests"
+
+  build-and-deploy:
+    name: Build and Deploy
+    needs: integration
+    runs-on: self-hosted
+
+    env:
+      AWS_REGION: us-east-1
+      ECR_REPOSITORY: network_security
+      CONTAINER_NAME: network_security
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t $ECR_REPOSITORY:latest .
+
+      - name: Tag and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag $ECR_REPOSITORY:latest \
+            $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Stop and remove old container
+        run: |
+          docker stop $CONTAINER_NAME || true
+          docker rm -f $CONTAINER_NAME || true
+
+      - name: Deploy new container
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker run -d \
+            --restart unless-stopped \
+            -p 8080:8080 \
+            --ipc=host \
+            --name $CONTAINER_NAME \
+            -e AWS_REGION=$AWS_REGION \
+            $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          docker ps --filter "name=$CONTAINER_NAME"
+          docker logs --tail 50 $CONTAINER_NAME
