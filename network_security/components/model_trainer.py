@@ -3,7 +3,6 @@ import numpy as np
 import os
 import sys
 import dagshub
-dagshub.init(repo_owner='banothanil1', repo_name='Network-Security', mlflow=True)
 from network_security.entity.data_ingestion_entity import ClassificationReportEntity,ModelTrainerEntity
 from network_security.entity.config_entity import ModelTrainerConfig
 from network_security.exception.exception import NetworkSecurityFException
@@ -47,6 +46,17 @@ class ModalTrainer:
         except Exception as e:
             raise NetworkSecurityFException(e,sys)
 
+    def initialize_mlflow(self):
+        """Initialize DagsHub and MLflow when model training starts."""
+        try:
+            dagshub.init(
+                repo_owner="banothanil1",
+                repo_name="Network-Security",
+                mlflow=True
+            )
+            logging.info("DagsHub and MLflow initialized successfully")
+        except Exception as e:
+            raise NetworkSecurityFException(e, sys)
     def model_train(self,X_train,y_train,X_test,y_test):
         """this function will train the model using the given indep. and dependent data"""
         try:
@@ -141,8 +151,8 @@ class ModalTrainer:
 
     def initialize_model_trainer(self):
         """here starts the model training"""
-
         try:
+            self.initialize_mlflow()
             #Reading the data from transformed data
             train_data_npy = load_npy_array(self.data_transformation_entity.trasformed_train_data_file_path)
             test_data_npy = load_npy_array(self.data_transformation_entity.trasformed_test_data_file_path)

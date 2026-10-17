@@ -82,6 +82,7 @@ jobs:
       - name: Deploy New Container
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
         run: |
           docker run -d \
             --restart unless-stopped \
@@ -89,6 +90,7 @@ jobs:
             --ipc=host \
             --name $CONTAINER_NAME \
             -e AWS_REGION=$AWS_REGION \
+            -e DAGSHUB_USER_TOKEN="$DAGSHUB_USER_TOKEN" \
             $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Verify Deployment
