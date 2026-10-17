@@ -19,14 +19,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Lint code
+      - name: Lint Code
         run: echo "Linting repository"
 
-      - name: Run unit tests
+      - name: Run Unit Tests
         run: echo "Running unit tests"
 
-  build-and-deploy:
-    name: Build and Deploy
+  continuous-deployment:
+    name: Continuous Deployment
     needs: integration
     runs-on: self-hosted
 
@@ -39,7 +39,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -50,28 +50,36 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
+      - name: Build Docker Image
         run: |
           docker build -t $ECR_REPOSITORY:latest .
 
-      - name: Tag and push Docker image
+      - name: Tag Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker tag $ECR_REPOSITORY:latest \
+          docker tag \
+            $ECR_REPOSITORY:latest \
             $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      - name: Push Docker Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker push \
+            $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Stop and remove old container
+      - name: Remove Existing Container
         run: |
           docker stop $CONTAINER_NAME || true
           docker rm -f $CONTAINER_NAME || true
 
-      - name: Deploy new container
+      - name: Deploy New Container
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
           docker run -d \
             --restart unless-stopped \
             -p 8080:8080 \
@@ -80,8 +88,16 @@ jobs:
             -e AWS_REGION=$AWS_REGION \
             $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Verify deployment
+      - name: Verify Deployment
         run: |
           sleep 10
+
+          if [ "$(docker inspect -f '{{.State.Running}}' $CONTAINER_NAME 2>/dev/null)" != "true" ]; then
+            echo "Container failed to start."
+            docker logs $CONTAINER_NAME || true
+            exit 1
+          fi
+
+          echo "Container is running successfully."
           docker ps --filter "name=$CONTAINER_NAME"
           docker logs --tail 50 $CONTAINER_NAME
